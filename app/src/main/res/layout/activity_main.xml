@@ -18,14 +18,6 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
-        <Button
-            android:id="@+id/volley"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="volley"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/retofit" />
-
         <TextView
             android:id="@+id/text"
             android:layout_below="@id/retofit"
