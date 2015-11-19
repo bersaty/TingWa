@@ -2,6 +2,7 @@
 
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
     dependencies {
@@ -14,6 +15,8 @@ buildscript {
 
 allprojects {
     repositories {
+        //如果不添加mavenCentral() 这个会找不到compile 'com.google.code.gson:gson:2.3.1'
+        mavenCentral()
         jcenter()
     }
 }
