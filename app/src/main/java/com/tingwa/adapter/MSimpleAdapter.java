@@ -18,6 +18,13 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     private List<ContentValues> mData;
     private Context mContext;
     private RecyclerView.LayoutManager mLayoutManager;
+    private OnItemClickLitener mOnItemClickListener = null;
+
+    public interface OnItemClickLitener {
+        void onItemClick(View view, int position);
+
+        void onItemLongClick(View view, int position);
+    }
 
     public MSimpleAdapter(List<ContentValues> dataset, Context context) {
         super();
@@ -34,14 +41,18 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     }
 
     //定义ViewHolder，包括两个控件
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTitle;
         public ImageView mImageView;
         public TextView mUrl;
 
         public ViewHolder(View itemView) {
             super(itemView);
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 
@@ -63,12 +74,31 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         //设置TextView内容
         viewHolder.mTitle.setText((CharSequence) mData.get(i).get("title"));
         viewHolder.mUrl.setText((CharSequence) mData.get(i).get("url"));
         viewHolder.mImageView.setImageDrawable((Drawable) mData.get(i).get("image"));
         //设置ImageView资源
+        // 如果设置了回调，则设置点击事件
+        if (mOnItemClickListener != null) {
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = viewHolder.getLayoutPosition();
+                    mOnItemClickListener.onItemClick(viewHolder.itemView, pos);
+                }
+            });
+
+            viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = viewHolder.getLayoutPosition();
+                    mOnItemClickListener.onItemLongClick(viewHolder.itemView, pos);
+                    return false;
+                }
+            });
+        }
     }
 
     public void remove(int position) {
@@ -79,5 +109,9 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     public void clearItem() {
         mData.clear();
         notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(OnItemClickLitener listener) {
+        this.mOnItemClickListener = listener;
     }
 }
