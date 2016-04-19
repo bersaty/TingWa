@@ -2,6 +2,8 @@ package com.tingwa.activity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import com.tingwa.R;
 import com.tingwa.adapter.MSimpleAdapter;
 import com.tingwa.asynctask.LoadHtmlTask;
+import com.tingwa.com.tingwa.data.StaticData;
 import com.tingwa.decoration.DividerItemDecoration;
 
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MSimpleAdapter mSimpleAdapter;
     private List<ContentValues> mData;
     private Context mContext;
+
+    private MediaPlayer mediaPlayer;
+    private int playbackPosition=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.retofit:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            playAudio(StaticData.testUrl);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
                 break;
             case R.id.jsoup:
                 LoadHtmlTask loadHtmlTask = new LoadHtmlTask(this, mData,mSimpleAdapter);
@@ -73,6 +90,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     loadHtmlTask.execute();
                 Log.i("wch ", mData + " ");
                 break;
+        }
+    }
+
+    private void playAudio(String url) throws Exception
+    {
+        killMediaPlayer();
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setDataSource(url);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.prepare();
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        killMediaPlayer();
+    }
+
+    private void killMediaPlayer() {
+        if(mediaPlayer!=null) {
+            try {
+                mediaPlayer.release();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
