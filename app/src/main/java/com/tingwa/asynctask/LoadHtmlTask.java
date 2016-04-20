@@ -48,20 +48,17 @@ public class LoadHtmlTask extends AsyncTask<String, String, String> {
             Element div_class = content.select("div.rt_frame").first();
             Document tab_contains = Jsoup.parse(div_class.toString());
             Element top_data = tab_contains.getElementById("top_data");
-            Elements elements_dd = top_data.getElementsByTag("dd");
-//            Log.i("wch title = ",elements_dd.toString());
-
-            for (Element links : elements_dd) {
+            Elements elements_name = top_data.getElementsByClass("music_name");
+            for (Element links : elements_name) {
                 String title = links.getElementsByTag("a").text();
-                Log.i("wch title = ",title);
-
-//                String link = links.select("a").attr("href").replace("/", "").trim();
+                String link = links.select("a").attr("href").trim();
+//                String link = links.select("a").attr("href").trim();
 //                String url = StaticData.TOP_URL + link;
 //                murl += title + "  " + url + "\n";
-//                ContentValues values = new ContentValues();
-//                values.put("title", title);
-//                values.put("url", url);
-//                mData.add(values);
+                ContentValues values = new ContentValues();
+                values.put("title", title);
+                values.put("url", link);
+                mData.add(values);
             }
 
         } catch (IOException e) {
@@ -118,7 +115,7 @@ public class LoadHtmlTask extends AsyncTask<String, String, String> {
         mProgressDialog.show();
     }
 
-    public LoadHtmlTask(Context context, List<ContentValues> data, MSimpleAdapter adapter,int webtype) {
+    public LoadHtmlTask(Context context, List<ContentValues> data, MSimpleAdapter adapter, int webtype) {
         WebType = webtype;
         mContext = context;
         mData = data;
