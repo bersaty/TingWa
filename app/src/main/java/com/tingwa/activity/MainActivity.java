@@ -2,10 +2,10 @@ package com.tingwa.activity;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,25 +17,23 @@ import android.widget.Toast;
 import com.tingwa.R;
 import com.tingwa.adapter.MSimpleAdapter;
 import com.tingwa.asynctask.LoadHtmlTask;
-import com.tingwa.com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.utils.HtmlUtils;
-
+import com.tingwa.data.StaticContent;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mTextView;
-    private Button mBtnRetrofit, mBtnMain, mBtnTop,mBtnMine;
+    private Button mBtnRetrofit, mBtnMain, mBtnTop, mBtnMine;
     private RecyclerView mRecyclerview;
     private MSimpleAdapter mSimpleAdapter;
     private List<ContentValues> mData;
     private Context mContext;
 
     private MediaPlayer mediaPlayer;
-    private int playbackPosition = 0;
     LoadHtmlTask loadHtmlTask;
     private String mp3Url;
 
@@ -51,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnMine = (Button) findViewById(R.id.mine);
         mContext = this;
 
+        Intent intent = new Intent(this, PlayMusicActivity.class);
+        startActivity(intent);
+
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mData = new ArrayList<>();
         mSimpleAdapter = new MSimpleAdapter(mData, this);
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void run() {
                         mp3Url = HtmlUtils.getMp3Url((String) textView.getText());
-                        Log.i("wch mp3url = ",mp3Url+"~");
+                        Log.i("wch mp3url = ", mp3Url + "~");
 //                        try {
 //                            playAudio((String) textView.getText());
 //                        } catch (Exception e) {
