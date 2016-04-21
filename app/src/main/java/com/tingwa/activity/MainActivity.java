@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.tingwa.R;
 import com.tingwa.adapter.MSimpleAdapter;
 import com.tingwa.asynctask.LoadHtmlTask;
-import com.tingwa.com.tingwa.data.HtmlTagContent;
+import com.tingwa.com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.utils.HtmlUtils;
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mTextView;
-    private Button mBtnRetrofit, mBtnMain, mBtnTop;
+    private Button mBtnRetrofit, mBtnMain, mBtnTop,mBtnMine;
     private RecyclerView mRecyclerview;
     private MSimpleAdapter mSimpleAdapter;
     private List<ContentValues> mData;
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnMain = (Button) findViewById(R.id.main);
         mBtnTop = (Button) findViewById(R.id.top);
         mRecyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+        mBtnMine = (Button) findViewById(R.id.mine);
         mContext = this;
 
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnRetrofit.setOnClickListener(this);
         mBtnMain.setOnClickListener(this);
         mBtnTop.setOnClickListener(this);
-
+        mBtnMine.setOnClickListener(this);
     }
 
     @Override
@@ -107,12 +108,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.main:
-                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, HtmlTagContent.MAIN_PAGE);
+                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MAIN_PAGE);
                 if (mData.isEmpty())
                     loadHtmlTask.execute();
                 break;
             case R.id.top:
-                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, HtmlTagContent.TOP_PAGE);
+                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.TOP_PAGE);
+                if (mData.isEmpty())
+                    loadHtmlTask.execute();
+                break;
+            case R.id.mine:
+                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MINE_PAGE);
                 if (mData.isEmpty())
                     loadHtmlTask.execute();
                 break;

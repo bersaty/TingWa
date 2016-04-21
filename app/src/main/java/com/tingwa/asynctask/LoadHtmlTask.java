@@ -7,8 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.tingwa.adapter.MSimpleAdapter;
-import com.tingwa.com.tingwa.data.HtmlTagContent;
-import com.tingwa.com.tingwa.data.StaticData;
+import com.tingwa.com.tingwa.data.StaticContent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,16 +33,43 @@ public class LoadHtmlTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         // TODO Auto-generated method stub
-        if (WebType == HtmlTagContent.MAIN_PAGE) //主页内容
+        if (WebType == StaticContent.MAIN_PAGE) //主页内容
             LoadMainContent();
-        if (WebType == HtmlTagContent.TOP_PAGE) //排行榜内容
+        if (WebType == StaticContent.TOP_PAGE) //排行榜内容
             LoadTopContent();
+        if(WebType == StaticContent.MINE_PAGE)
+            LoadMineContent();
         return null;
+    }
+
+    private void LoadMineContent() {
+        try {
+            Log.i("wch elemname = ","1111~~~~~~~~~~~  ");
+            mDocument = Jsoup.connect(StaticContent.MINE_URL).timeout(5000).post();
+            Document content = Jsoup.parse(mDocument.toString());
+            Element div_class = content.select("div.lt_frame").first();
+            Document tab_contains = Jsoup.parse(div_class.toString());
+            Elements elements_name = tab_contains.select("div.left");
+
+            for (Element links : elements_name) {
+                String title = links.getElementsByTag("a").text();
+                String link = links.select("a").attr("href").trim();
+                Log.i("wch title = ","~~~~~~~~~~~  "+title+"   link = "+link);
+                ContentValues values = new ContentValues();
+                values.put("title", title);
+                values.put("url", link);
+                mData.add(values);
+            }
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private void LoadTopContent() {
         try {
-            mDocument = Jsoup.connect(StaticData.TOP_URL).timeout(5000).post();
+            mDocument = Jsoup.connect(StaticContent.TOP_URL).timeout(5000).post();
             Document content = Jsoup.parse(mDocument.toString());
             Element div_class = content.select("div.rt_frame").first();
             Document tab_contains = Jsoup.parse(div_class.toString());
@@ -69,7 +95,7 @@ public class LoadHtmlTask extends AsyncTask<String, String, String> {
 
     private void LoadMainContent() {
         try {
-            mDocument = Jsoup.connect(StaticData.MAIN_URL).timeout(5000).post();
+            mDocument = Jsoup.connect(StaticContent.MAIN_URL).timeout(5000).post();
             Document content = Jsoup.parse(mDocument.toString());
             Element tab_menu_top_20 = content.select("div.wrap_960").first();
             Document tab_contains = Jsoup.parse(tab_menu_top_20.toString());
@@ -78,7 +104,7 @@ public class LoadHtmlTask extends AsyncTask<String, String, String> {
                 String title = links.getElementsByTag("a").text();
 
                 String link = links.select("a").attr("href").replace("/", "").trim();
-                String url = StaticData.MAIN_URL + link;
+                String url = StaticContent.MAIN_URL + link;
                 murl += title + "  " + url + "\n";
                 ContentValues values = new ContentValues();
                 values.put("title", title);

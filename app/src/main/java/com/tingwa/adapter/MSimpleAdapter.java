@@ -13,6 +13,9 @@ import com.tingwa.R;
 
 import java.util.List;
 
+/**
+ * 列表Adapter
+ */
 public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHolder> {
     //数据集
     private List<ContentValues> mData;
