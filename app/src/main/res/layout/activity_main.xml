@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        >
 
         <Button
             android:id="@+id/testPlay"
@@ -35,25 +36,49 @@
             android:text="main" />
 
         <Button
+            android:id="@+id/top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Top"
-            android:id="@+id/top"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/main" />
+            android:layout_toEndOf="@+id/main"
+            android:text="Top" />
 
         <Button
+            android:id="@+id/mine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="mine"
-            android:id="@+id/mine"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true" />
+            android:text="mine" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_pannel"
+        android:background="#2232aaee"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:text="后" />
+
+        <SeekBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/seekBar"
+            android:layout_weight="1" />
+
+    </LinearLayout>
 </LinearLayout>

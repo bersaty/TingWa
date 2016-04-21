@@ -20,9 +20,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.BaseActivity" />
-        <activity
-            android:name=".activity.PlayMusicActivity"
-            android:theme="@style/AppTheme.PlayMusicActivity"></activity>
     </application>
 
 </manifest>

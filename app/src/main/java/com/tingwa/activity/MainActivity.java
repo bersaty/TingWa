@@ -2,7 +2,6 @@ package com.tingwa.activity;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -17,9 +16,10 @@ import android.widget.Toast;
 import com.tingwa.R;
 import com.tingwa.adapter.MSimpleAdapter;
 import com.tingwa.asynctask.LoadHtmlTask;
+import com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.utils.HtmlUtils;
-import com.tingwa.data.StaticContent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +48,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mRecyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         mBtnMine = (Button) findViewById(R.id.mine);
         mContext = this;
-
-        Intent intent = new Intent(this, PlayMusicActivity.class);
-        startActivity(intent);
 
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mData = new ArrayList<>();
