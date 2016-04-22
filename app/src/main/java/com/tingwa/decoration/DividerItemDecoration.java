@@ -40,9 +40,11 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
 
     private int mOrientation;
+    private int gap = 0;//分割线旁边间隙
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
+        gap = (int) (context.getResources().getDisplayMetrics().density * 8);//8dp间隙
         mDivider = a.getDrawable(0);
         a.recycle();
         setOrientation(orientation);
@@ -56,8 +58,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent) {
-
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             drawVertical(c, parent);
         } else {
@@ -79,7 +80,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
                     .getLayoutParams();
             final int top = child.getBottom() + params.bottomMargin;
             final int bottom = top + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
+            mDivider.setBounds(left + gap, top, right - gap, bottom);
             mDivider.draw(c);
         }
     }
@@ -95,13 +96,13 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
                     .getLayoutParams();
             final int left = child.getRight() + params.rightMargin;
             final int right = left + mDivider.getIntrinsicHeight();
-            mDivider.setBounds(left, top, right, bottom);
+            mDivider.setBounds(left + gap, top, right - gap, bottom);
             mDivider.draw(c);
         }
     }
 
     @Override
-    public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if (mOrientation == VERTICAL_LIST) {
             outRect.set(0, 0, 0, mDivider.getIntrinsicHeight());
         } else {
