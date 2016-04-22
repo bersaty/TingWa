@@ -1,13 +1,15 @@
 package com.tingwa.activity;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,34 +22,38 @@ import com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.utils.HtmlUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView mTextView;
+    private TextView mSongTitle;
     private Button mBtnRetrofit, mBtnMain, mBtnTop, mBtnMine;
     private RecyclerView mRecyclerview;
     private MSimpleAdapter mSimpleAdapter;
     private List<ContentValues> mData;
     private Context mContext;
 
-    private MediaPlayer mediaPlayer;
-    LoadHtmlTask loadHtmlTask;
-    private String mp3Url;
+    private MediaPlayer mMediaPlayer;
+    private LoadHtmlTask mLoadHtmlTask;
+    private String mSongUrl;
+
+    private MyHandler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView = (TextView) findViewById(R.id.text);
+        mSongTitle = (TextView) findViewById(R.id.song_title);
         mBtnRetrofit = (Button) findViewById(R.id.testPlay);
         mBtnMain = (Button) findViewById(R.id.main);
         mBtnTop = (Button) findViewById(R.id.top);
         mRecyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         mBtnMine = (Button) findViewById(R.id.mine);
         mContext = this;
+        mHandler = new MyHandler(this);
 
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mData = new ArrayList<>();
@@ -55,22 +61,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mSimpleAdapter.setOnItemClickListener(new MSimpleAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(View view, int position) {
-                final TextView textView = (TextView) view.findViewById(R.id.url);
+                TextView songUrl = (TextView) view.findViewById(R.id.url);
+                TextView songTitle = (TextView) view.findViewById(R.id.title);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mp3Url = HtmlUtils.getMp3Url((String) textView.getText());
-                        Log.i("wch mp3url = ", mp3Url + "~");
-//                        try {
-//                            playAudio((String) textView.getText());
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-                    }
-                }).start();
-
-                Toast.makeText(mContext, "click ~" + " url = " + mp3Url, Toast.LENGTH_SHORT).show();
+                Message msg = new Message();
+                msg.what = StaticContent.MUSIC_PLAY;
+                mHandler.sendMessage(msg);
+                //歌曲首页地址
+                mSongUrl = (String) songUrl.getText();
+                mSongTitle.setText(songTitle.getText());
+                Toast.makeText(mContext, "click ~" + " url = " + mSongUrl, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -96,40 +96,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         try {
-                            playAudio(mp3Url);
+                            playAudio(mSongUrl);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }).start();
-                Toast.makeText(mContext, " url = " + mp3Url, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, " url = " + mSongUrl, Toast.LENGTH_SHORT).show();
 
                 break;
             case R.id.main:
-                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MAIN_PAGE);
+                mLoadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MAIN_PAGE);
                 if (mData.isEmpty())
-                    loadHtmlTask.execute();
+                    mLoadHtmlTask.execute();
                 break;
             case R.id.top:
-                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.TOP_PAGE);
+                mLoadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.TOP_PAGE);
                 if (mData.isEmpty())
-                    loadHtmlTask.execute();
+                    mLoadHtmlTask.execute();
                 break;
             case R.id.mine:
-                loadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MINE_PAGE);
+                mLoadHtmlTask = new LoadHtmlTask(this, mData, mSimpleAdapter, StaticContent.MINE_PAGE);
                 if (mData.isEmpty())
-                    loadHtmlTask.execute();
+                    mLoadHtmlTask.execute();
                 break;
         }
     }
 
     private void playAudio(String url) throws Exception {
         killMediaPlayer();
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setDataSource(url);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mediaPlayer.prepare();
-        mediaPlayer.start();
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setDataSource(url);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.prepare();
+        mMediaPlayer.start();
     }
 
     @Override
@@ -139,13 +139,47 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void killMediaPlayer() {
-        if (mediaPlayer != null) {
+        if (mMediaPlayer != null) {
             try {
-                mediaPlayer.release();
+                mMediaPlayer.release();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
+    class MyHandler extends Handler {
+        WeakReference<Activity> mActivityReference;
+
+        MyHandler(Activity activity) {
+            mActivityReference = new WeakReference<Activity>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final Activity activity = mActivityReference.get();
+            switch (msg.what) {
+                case StaticContent.MUSIC_LAST:
+                    break;
+                case StaticContent.MUSIC_NEXT:
+                    break;
+                case StaticContent.MUSIC_STOP:
+                    break;
+                case StaticContent.MUSIC_PLAY:
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String mp3url = HtmlUtils.getMp3Url(mSongUrl);
+                                playAudio(mp3url);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                    break;
+
+            }
+        }
+    }
 }

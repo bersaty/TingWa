@@ -67,11 +67,13 @@
         android:orientation="horizontal"
         >
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_margin="5dp"
-            android:text="后" />
+            android:layout_weight="1"
+            android:id="@+id/song_title"
+            android:text="测试内容嗯" />
 
         <SeekBar
             android:layout_width="wrap_content"
