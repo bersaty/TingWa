@@ -8,6 +8,11 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**
@@ -60,20 +65,21 @@ public class MusicCacheUtils {
     /**
      * 存入缓存（内存缓存，磁盘缓存）
      */
-    public void putMusic(String url, String name) {
+    public void putMusic(String url, Context context) {
         // 判断是否存在DiskLruCache缓存，若没有存入
         String key = MD5Utils.md5(url);
-        //       String key = FileUtils.getFileNameWithoutExtension(url);
+        String fileUrl = context.getExternalCacheDir() + "/mp3/";
         try {
             if (mDiskLruCache.get(key) == null) {
+                downFile(url, fileUrl, key);
                 DiskLruCache.Editor editor = mDiskLruCache.edit(key);
                 if (editor != null) {
-//                    OutputStream outputStream = editor.newOutputStream(0);
-//                    if (outputStream != null && bitmap != null && bitmap.compress(CompressFormat.JPEG, 100, outputStream)) {
-//                        editor.commit();
-//                    } else {
-//                        editor.abort();
-//                    }
+                    OutputStream outputStream = editor.newOutputStream(0);
+                    if (outputStream != null) {
+                        editor.commit();
+                    } else {
+                        editor.abort();
+                    }
                 }
                 mDiskLruCache.flush();  //将缓存记录同步到journal文件中。
             }
@@ -83,7 +89,52 @@ public class MusicCacheUtils {
     }
 
     /**
+     * 该函数返回整形    -1：代表下载文件错误0 ：下载文件成功1：文件已经存在
+     *
+     * @param urlstr
+     * @param path
+     * @param fileName
+     * @return
+     */
+    public int downFile(String urlstr, String path, String fileName) {
+        InputStream inputStream = null;
+        FileUtils fileUtils = new FileUtils();
+
+        if (fileUtils.checkLocalExist(path + fileName)) {
+            return 1;
+        } else {
+            inputStream = getInputStreamFormUrl(urlstr);
+            File resultFile = fileUtils.writeToSDfromInput(path, fileName, inputStream);
+            if (resultFile == null) {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 根据URL得到输入流
+     *
+     * @param urlstr
+     * @return
+     */
+    public InputStream getInputStreamFormUrl(String urlstr) {
+        InputStream inputStream = null;
+        try {
+            URL url = new URL(urlstr);
+            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+            inputStream = urlConn.getInputStream();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
+
+    /**
      * 获取cache里面的文件
+     *
      * @param context
      * @param url
      * @return
@@ -91,7 +142,8 @@ public class MusicCacheUtils {
     public static String getDiskCacheFilePath(Context context, String url) {
         File file = getDiskCacheDir(context);
         String key = MD5Utils.md5(url);
-        File cacheFile = new File(file.getPath() + File.separator + key + ".mp3");
+        File cacheFile = new File(file.getPath() + File.separator + key);
+        Log.i("wch cache music = ", cacheFile.getPath());
         return cacheFile.getPath();
     }
 

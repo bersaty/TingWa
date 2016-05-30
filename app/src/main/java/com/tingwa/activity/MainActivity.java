@@ -20,8 +20,11 @@ import com.tingwa.adapter.MSimpleAdapter;
 import com.tingwa.asynctask.LoadHtmlTask;
 import com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
+import com.tingwa.utils.DownLoadUtils;
 import com.tingwa.utils.HtmlUtils;
+import com.tingwa.utils.MusicCacheUtils;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +44,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String mSongUrl;
 
     private MyHandler mHandler;
+    private MusicCacheUtils mMusicCacheUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mBtnMine = (Button) findViewById(R.id.mine);
         mContext = this;
         mHandler = new MyHandler(this);
+        mMusicCacheUtils = new MusicCacheUtils(this);
 
         mRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mData = new ArrayList<>();
@@ -86,6 +91,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mBtnMain.setOnClickListener(this);
         mBtnTop.setOnClickListener(this);
         mBtnMine.setOnClickListener(this);
+
+        File destDir = new File(mContext.getExternalCacheDir() + "/mp3");
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
     }
 
     @Override
@@ -96,7 +106,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     @Override
                     public void run() {
                         try {
-                            playAudio(mSongUrl);
+//                            playAudio(mSongUrl);
+                            DownLoadUtils.mp3load(StaticContent.testUrl);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -170,7 +181,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         @Override
                         public void run() {
                             try {
-                                String mp3url = HtmlUtils.getMp3Url(mSongUrl);
+                                String mp3url;
+                                if (mMusicCacheUtils.isMusicExist(mSongUrl))//从cache里面查找是否存在音乐
+                                    mp3url = mMusicCacheUtils.getDiskCacheFilePath(activity, mSongUrl);
+                                else {//不存在就下载到缓存里面
+                                    mp3url = HtmlUtils.getMp3Url(mSongUrl);
+                                    mMusicCacheUtils.putMusic(mSongUrl,activity);
+                                }
                                 playAudio(mp3url);
                             } catch (Exception e) {
                                 e.printStackTrace();

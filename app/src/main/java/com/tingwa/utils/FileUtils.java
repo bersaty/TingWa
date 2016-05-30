@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 
 /**
@@ -74,7 +75,7 @@ public class FileUtils {
             return -1;
         }
 
-        File path=new File(filePath);
+        File path = new File(filePath);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             return path.getUsableSpace();
         } else {
@@ -110,18 +111,17 @@ public class FileUtils {
     }
 
     /**
-     *
      * @param realPath
      * @return
      */
-    public static long getTotalSize(String realPath){
-        try{
+    public static long getTotalSize(String realPath) {
+        try {
             StatFs statFs = new StatFs(realPath);
             long blockSize = statFs.getBlockSizeLong();
             long totalBlocks = statFs.getBlockCountLong();
             long totalSize = blockSize * totalBlocks;
             return totalSize;
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
@@ -416,7 +416,10 @@ public class FileUtils {
     }
 
 
-    // 获取sdcard文件夹路径
+    /**
+     * 获取sdcard文件夹路径
+     * @return
+     */
     public static String getSdCardPath() {
         boolean exist = hasSDCardMounted();
         String sdpath = "";
@@ -426,7 +429,10 @@ public class FileUtils {
         return sdpath;
     }
 
-    // 获取根文件夹路径
+    /**
+     * 获取根文件夹路径
+     * @return
+     */
     public static String getRootPath() {
         boolean exist = hasSDCardMounted();
         String rootPath = "";
@@ -436,7 +442,11 @@ public class FileUtils {
         return rootPath;
     }
 
-    // 获取文件路径下的所有子文件数组
+    /**
+     * 获取文件路径下的所有子文件数组
+     * @param path
+     * @return
+     */
     public static File[] getAllFiles(String path) {
         File[] files = null;
         if (TextUtils.isEmpty(path)) {
@@ -457,6 +467,7 @@ public class FileUtils {
 
     /**
      * 获取当前目录及子目录下包含的所有文件数量
+     *
      * @param path
      * @return
      */
@@ -526,6 +537,10 @@ public class FileUtils {
         return allBlockCountLong / blockSize * 512;
     }
 
+    /**
+     * 计算磁盘总容量
+     * @return
+     */
     public static long getSDCardTotalSize() {
         try {
             File dataPath = Environment.getDataDirectory();
@@ -536,7 +551,7 @@ public class FileUtils {
 
             long mDiskTotalCapacity = allBlocks * blockSize;
 
-            return  mDiskTotalCapacity;
+            return mDiskTotalCapacity;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -544,7 +559,10 @@ public class FileUtils {
         return 0;
     }
 
-    private void computeDiskAvailableCapacity(){
+    /**
+     * 计算磁盘剩余空间
+     */
+    private void computeDiskAvailableCapacity() {
         try {
             File dataPath = Environment.getDataDirectory();
             StatFs dataStat = new StatFs(dataPath.getPath());
@@ -558,4 +576,40 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 将一个inputStream里面的数据写到SD卡中
+     *
+     * @param path
+     * @param fileName
+     * @param inputStream
+     * @return
+     */
+    public File writeToSDfromInput(String path, String fileName, InputStream inputStream) {
+        //createSDDir(path);
+        File file = null;
+        if (createFile(path, fileName)) {
+            file = new File(path + fileName);
+            file.mkdir();
+        }
+        OutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream(file);
+            byte[] buffer = new byte[4 * 1024];
+            while (inputStream.read(buffer) != -1) {
+                outStream.write(buffer);
+            }
+            outStream.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                outStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return file;
+    }
 }

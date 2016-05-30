@@ -76,6 +76,7 @@ public class HtmlUtils {
             Element div_class = content.select("div.rt_frame").first();
             Document tab_contains = Jsoup.parse(div_class.toString());
             Element top_data = tab_contains.getElementById("top_data");
+            Log.i("wch LoadTopContent ",top_data+" ~~");
             Elements elements_name = top_data.getElementsByClass("music_name");
             for (Element links : elements_name) {
                 String title = links.getElementsByTag("a").text();
