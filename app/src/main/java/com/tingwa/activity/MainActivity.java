@@ -28,6 +28,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -71,6 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 Message msg = new Message();
                 msg.what = StaticContent.MUSIC_PLAY;
+                msg.obj = position;
                 mHandler.sendMessage(msg);
                 //歌曲首页地址
                 mSongUrl = (String) songUrl.getText();
@@ -139,8 +141,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setDataSource(url);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer.setLooping(false);
         mMediaPlayer.prepare();
         mMediaPlayer.start();
+        mMediaPlayer.setOnSeekCompleteListener(new MediaPlayer.OnSeekCompleteListener() {
+            @Override
+            public void onSeekComplete(MediaPlayer mediaPlayer) {
+                Toast.makeText(MainActivity.this,"播放完",Toast.LENGTH_SHORT).show();
+
+                String uuu = (String) mData.get(new Random().nextInt() % 10).get("url");
+
+                try {
+                    playAudio(uuu);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -177,6 +194,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 case StaticContent.MUSIC_STOP:
                     break;
                 case StaticContent.MUSIC_PLAY:
+                    int position = (int) msg.obj;
                     new Thread(new Runnable() {
                         @Override
                         public void run() {

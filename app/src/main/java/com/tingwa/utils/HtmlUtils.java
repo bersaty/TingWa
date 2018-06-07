@@ -40,23 +40,37 @@ public class HtmlUtils {
      */
     public static void LoadMineContent(List<ContentValues> mData) {
         try {
-            Log.i("wch elemname = ","1111~~~~~~~~~~~  ");
-            Document mDocument = Jsoup.connect(StaticContent.MINE_URL).timeout(5000).post();
-            Document content = Jsoup.parse(mDocument.toString());
-            Element div_class = content.select("div.lt_frame").first();
-            Document tab_contains = Jsoup.parse(div_class.toString());
-            Elements elements_name = tab_contains.select("div.left");//界面的内容
-            Elements elements_page = tab_contains.select("div.pagenavi");//选择页数的内容
-            Log.i("wch page elem = ",elements_page.toString());
+            for(int i = 1;i<10;i++) {
+                String url = StaticContent.MINE_URL;
+                if(i >1){
+                    url = url + "&p="+i+"&tag=0";
+                }
+                Log.i("wch elemname = ", "1111~~~~~~~~~~~  ");
+                Document mDocument = Jsoup.connect(url).timeout(5000).post();
+                Document content = Jsoup.parse(mDocument.toString());
+                Element div_class = content.select("div.lt_frame").first();
+                Document tab_contains = Jsoup.parse(div_class.toString());
+                Elements elements_name = tab_contains.select("div.left");//界面的内容
+                Elements elements_page = tab_contains.select("div.pagenavi");//选择页数的内容
+                Elements elements_summary = tab_contains.select("div.top_10.clearfix");
 
-            for (Element links : elements_name) {
-                String title = links.getElementsByTag("a").text();
-                String link = links.select("a").attr("href").trim();
-                Log.i("wch title = ","~~~~~~~~~~~  "+title+"   link = "+link);
-                ContentValues values = new ContentValues();
-                values.put("title", title);
-                values.put("url", link);
-                mData.add(values);
+//                Log.i("wch page elem = ", elements_page.toString());
+//                Log.i("wch elements_summary = ", elements_summary.toString() +"####+++====");
+
+//                for(Element summarys : elements_summary) {
+//                    String str = summarys.getElementsByClass("top_10 clearfix").text();
+//                    Log.i("wch str = ", elements_summary.toString());
+//                }
+
+                for (Element links : elements_name) {
+                    String title = links.getElementsByTag("a").text();
+                    String link = links.select("a").attr("href").trim();
+                    Log.i("wch title = ", "~~~~~~~~~~~  " + title + "   link = " + link);
+                    ContentValues values = new ContentValues();
+                    values.put("title", title);
+                    values.put("url", link);
+                    mData.add(values);
+                }
             }
 
         } catch (IOException e) {

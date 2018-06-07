@@ -44,7 +44,7 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     }
 
     //定义ViewHolder，包括两个控件
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView mTitle;
         public ImageView mImageView;
         public TextView mUrl;
