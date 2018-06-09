@@ -2,8 +2,9 @@ package com.tingwa.model;
 
 /**
  * Created by wuchunhui on 16-4-21.
+ * 解析出来的数据
  */
-public class Song {
+public class SongInfo {
     private String music_singer;//艺术家
     private String recommend_time;//推荐时间
     private String listen_number;//播放次数

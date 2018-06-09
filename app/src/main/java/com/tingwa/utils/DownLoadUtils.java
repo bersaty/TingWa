@@ -61,13 +61,12 @@ public class DownLoadUtils {
      */
     public int downFile(String urlstr, String path, String fileName) {
         InputStream inputStream = null;
-        FileUtils fileUtils = new FileUtils();
 
-        if (fileUtils.checkLocalExist(path + fileName)) {
+        if (FileUtils.checkLocalExist(path + fileName)) {
             return 1;
         } else {
             inputStream = getInputStreamFormUrl(urlstr);
-            File resultFile = fileUtils.writeToSDfromInput(path, fileName, inputStream);
+            File resultFile = FileUtils.writeToSDfromInput(path, fileName, inputStream);
             if (resultFile == null) {
                 return -1;
             }

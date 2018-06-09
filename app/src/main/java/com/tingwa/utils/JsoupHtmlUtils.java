@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by wuchunhui on 16-4-20.
  */
-public class HtmlUtils {
+public class JsoupHtmlUtils {
 
     public static String getMp3Url(final String url) {
         try {
@@ -40,7 +40,7 @@ public class HtmlUtils {
      */
     public static void LoadMineContent(List<ContentValues> mData) {
         try {
-            for(int i = 1;i<10;i++) {
+            for(int i = 1;i<3;i++) {
                 String url = StaticContent.MINE_URL;
                 if(i >1){
                     url = url + "&p="+i+"&tag=0";
@@ -127,6 +127,7 @@ public class HtmlUtils {
                 String link = links.select("a").attr("href").replace("/", "").trim();
                 String url = StaticContent.MAIN_URL + link;
                 ContentValues values = new ContentValues();
+                Log.i("wch title = ", "~~~~~~~~~~~  " + title + "   link = " + link);
                 values.put("title", title);
                 values.put("url", url);
                 mData.add(values);

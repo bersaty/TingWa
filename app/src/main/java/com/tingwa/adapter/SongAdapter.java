@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 列表Adapter
  */
-public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHolder> {
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     //数据集
     private List<ContentValues> mData;
     private Context mContext;
@@ -29,14 +29,24 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
         void onItemLongClick(View view, int position);
     }
 
-    public MSimpleAdapter(List<ContentValues> dataset, Context context) {
+    public void setListData(List<ContentValues> data) {
+        this.mData = data;
+    }
+
+    public SongAdapter(Context context) {
+        super();
+        mContext = context;
+        mLayoutManager = null;
+    }
+
+    public SongAdapter(List<ContentValues> dataset, Context context) {
         super();
         mData = dataset;
         mContext = context;
         mLayoutManager = null;
     }
 
-    public MSimpleAdapter(List<ContentValues> dataset, Context context, RecyclerView.LayoutManager layoutmanager) {
+    public SongAdapter(List<ContentValues> dataset, Context context, RecyclerView.LayoutManager layoutmanager) {
         super();
         mData = dataset;
         mContext = context;
@@ -73,7 +83,10 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
     //返回数据的长度
     @Override
     public int getItemCount() {
-        return mData.size();
+        if (mData != null) {
+            return mData.size();
+        }
+        return 0;
     }
 
     @Override
@@ -109,7 +122,7 @@ public class MSimpleAdapter extends RecyclerView.Adapter<MSimpleAdapter.ViewHold
         notifyItemRemoved(position);
     }
 
-    public void clearItem() {
+    public void clearAllItems() {
         mData.clear();
         notifyDataSetChanged();
     }

@@ -224,8 +224,9 @@ public class FileUtils {
      * @return 带有合适单位名称的文件大小
      */
     public static String getSizeFormatText(long length) {
-        if (length <= 0)
+        if (length <= 0) {
             return "0KB";
+        }
 
         String str = "B";
         double result = (double) length;
@@ -253,8 +254,9 @@ public class FileUtils {
             sizeString = mFormater.format(result);
         }
         // B 和 KB 保留到各位
-        else
+        else {
             sizeString = Integer.toString((int) result);
+        }
         return sizeString + str;
     }
 
@@ -308,10 +310,11 @@ public class FileUtils {
         long availableBlocks = statFs.getAvailableBlocks();
         long availabSize = blockSize * availableBlocks;
 
-        if (availabSize >= size && availabSize != 0)
+        if (availabSize >= size && availabSize != 0) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     public static boolean isInSdCard(String filePath) {
@@ -418,6 +421,7 @@ public class FileUtils {
 
     /**
      * 获取sdcard文件夹路径
+     *
      * @return
      */
     public static String getSdCardPath() {
@@ -431,6 +435,7 @@ public class FileUtils {
 
     /**
      * 获取根文件夹路径
+     *
      * @return
      */
     public static String getRootPath() {
@@ -444,6 +449,7 @@ public class FileUtils {
 
     /**
      * 获取文件路径下的所有子文件数组
+     *
      * @param path
      * @return
      */
@@ -482,8 +488,11 @@ public class FileUtils {
                 File[] fileList = file.listFiles();
                 if (fileList != null) {
                     for (File f : fileList) {
-                        if (f.isFile() && (!file.isHidden() || hide)) count++;
-                        else count += getFilesCount(f.getPath(), hide);
+                        if (f.isFile() && (!file.isHidden() || hide)) {
+                            count++;
+                        } else {
+                            count += getFilesCount(f.getPath(), hide);
+                        }
                     }
                 } else {
                     return 1;//当前路径是文件
@@ -539,6 +548,7 @@ public class FileUtils {
 
     /**
      * 计算磁盘总容量
+     *
      * @return
      */
     public static long getSDCardTotalSize() {
@@ -584,7 +594,7 @@ public class FileUtils {
      * @param inputStream
      * @return
      */
-    public File writeToSDfromInput(String path, String fileName, InputStream inputStream) {
+    public static File writeToSDfromInput(String path, String fileName, InputStream inputStream) {
         //createSDDir(path);
         File file = null;
         if (createFile(path, fileName)) {
