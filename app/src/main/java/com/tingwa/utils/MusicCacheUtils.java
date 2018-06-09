@@ -38,6 +38,13 @@ public class MusicCacheUtils {
         }
     }
 
+    public static void createCacheDir(Context context){
+        File destDir = new File(context.getExternalCacheDir() + "/mp3");
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+    }
+
     /**
      * 从缓存（内存缓存，磁盘缓存）中获取歌曲
      */

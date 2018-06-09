@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.tingwa.R;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -118,12 +119,26 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
     }
 
     public void remove(int position) {
+        if(mData == null){
+            return;
+        }
         mData.remove(position);
         notifyItemRemoved(position);
     }
 
     public void clearAllItems() {
+        if(mData == null){
+            return;
+        }
         mData.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAllItems(Collection<? extends ContentValues> values) {
+        if(mData == null){
+            mData = (List<ContentValues>) values;
+        }
+        mData.addAll(values);
         notifyDataSetChanged();
     }
 

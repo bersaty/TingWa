@@ -1,6 +1,11 @@
 package com.tingwa.fragment;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +19,9 @@ import android.widget.Toast;
 import com.tingwa.Presenter.SongPresenter;
 import com.tingwa.R;
 import com.tingwa.adapter.SongAdapter;
-import com.tingwa.data.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.event.LoadDataEvent;
+import com.tingwa.service.MusicService;
 import com.tingwa.utils.LogUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -91,15 +96,31 @@ public class MainFragment extends BaseFragment {
         mMineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSongPresenter.loadData(StaticContent.MAIN_PAGE);
+//                mSongPresenter.loadData(StaticContent.MINE_PAGE);
+                Intent intent = new Intent(getActivity(), MusicService.class);
+//                getActivity().startService(intent);
+                getActivity().bindService(intent,mServiceConnection, Context.BIND_AUTO_CREATE);
             }
         });
     }
 
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LogUtil.d(" onServiceConnected");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            LogUtil.d(" onServiceDisconnected");
+        }
+    };
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receiveLoadDataEvent(LoadDataEvent loadDataEvent) {
         LogUtil.d(" receiveLoadDataEvent data size = " + loadDataEvent.getSongList().size());
-        mSongAdapter.setListData(loadDataEvent.getSongList());
-        mSongAdapter.notifyDataSetChanged();
+        mSongAdapter.clearAllItems();
+        mSongAdapter.addAllItems(loadDataEvent.getSongList());
     }
 }

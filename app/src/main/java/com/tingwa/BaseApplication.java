@@ -18,13 +18,14 @@ package com.tingwa;
 import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
+import com.tingwa.utils.MusicCacheUtils;
 
 public class BaseApplication extends Application {
 
   @Override public void onCreate() {
     super.onCreate();
     LeakCanary.install(this);
-
+    MusicCacheUtils.createCacheDir(this);
   }
 
 }

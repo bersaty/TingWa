@@ -3,7 +3,7 @@ package com.tingwa.utils;
 import android.content.ContentValues;
 import android.util.Log;
 
-import com.tingwa.data.StaticContent;
+import com.tingwa.constant.StaticContent;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.tingwa.contract.SongContract;
-import com.tingwa.data.StaticContent;
+import com.tingwa.constant.StaticContent;
 import com.tingwa.event.LoadDataEvent;
 import com.tingwa.utils.EventUtils;
 import com.tingwa.utils.JsoupHtmlUtils;
@@ -28,6 +28,10 @@ public class SongPresenter extends BasePresenter implements SongContract.Present
     public void loadData(int webType) {
         mLoadHtmlTask = new LoadHtmlTask(mContext, mSongList, webType);
         mLoadHtmlTask.execute();
+    }
+
+    public void playMusic(){
+
     }
 
     /**

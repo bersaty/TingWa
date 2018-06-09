@@ -1,4 +1,4 @@
-package com.tingwa.data;
+package com.tingwa.constant;
 
 /**
  * Created by wuchunhui on 15-11-9.
