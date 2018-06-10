@@ -98,8 +98,8 @@ public class MainFragment extends BaseFragment {
             public void onClick(View v) {
 //                mSongPresenter.loadData(StaticContent.MINE_PAGE);
                 Intent intent = new Intent(getActivity(), MusicService.class);
-//                getActivity().startService(intent);
-                getActivity().bindService(intent,mServiceConnection, Context.BIND_AUTO_CREATE);
+                getActivity().startService(intent);
+//                getActivity().bindService(intent,mServiceConnection, Context.BIND_AUTO_CREATE);
             }
         });
     }
