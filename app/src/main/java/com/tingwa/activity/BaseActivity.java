@@ -15,49 +15,49 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        LogUtil.d(" onStart ");
+        LogUtil.d(getClass().getSimpleName() + " onStart ");
         super.onStart();
     }
 
     @Override
     protected void onStop() {
-        LogUtil.d(" onStop ");
+        LogUtil.d(getClass().getSimpleName() + " onStop ");
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        LogUtil.d(" onDestroy ");
+        LogUtil.d(getClass().getSimpleName() + " onDestroy ");
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        LogUtil.d(" onBackPressed ");
+        LogUtil.d(getClass().getSimpleName() + " onBackPressed ");
         super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
-        LogUtil.d(" onPause ");
+        LogUtil.d(getClass().getSimpleName() + " onPause ");
         super.onPause();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        LogUtil.d(" onNewIntent ");
+        LogUtil.d(getClass().getSimpleName() + " onNewIntent ");
         super.onNewIntent(intent);
     }
 
     @Override
     protected void onResume() {
-        LogUtil.d(" onResume ");
+        LogUtil.d(getClass().getSimpleName() + " onResume ");
         super.onResume();
     }
 
     @Override
     protected void onRestart() {
-        LogUtil.d(" onRestart ");
+        LogUtil.d(getClass().getSimpleName() + " onRestart ");
         super.onRestart();
     }
 }

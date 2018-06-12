@@ -13,7 +13,6 @@ import com.tingwa.utils.LogUtil;
 
 public class MusicNotification extends NotificationBase{
 
-    public static int NOTIFICATION_MUSIC_ID = 1;
     private ContentValues mMusicInfo;
     Context mContext;
 
@@ -24,13 +23,12 @@ public class MusicNotification extends NotificationBase{
 
     @Override
     int getNotificationID() {
-        return MUSIC_NOTIFICATION;
+        return MUSIC_NOTIFICATION_ID;
     }
 
     public void sendNotification(String title,String summary){
 
         LogUtil.d("sendMusicNotification");
-
         //点击事件
         Intent openIntent = new Intent();
         openIntent.setClass(mContext,MainActivity.class);
@@ -59,6 +57,6 @@ public class MusicNotification extends NotificationBase{
         //点击后删除，如果是FLAG_NO_CLEAR则不删除，FLAG_ONGOING_EVENT用于某事正在进行，例如电话。
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
-        mNotificationManager.notify(NOTIFICATION_MUSIC_ID,notification);
+        mNotificationManager.notify(MUSIC_NOTIFICATION_ID,notification);
     }
 }

@@ -3,10 +3,12 @@ package com.tingwa.notificaton;
 import android.app.NotificationManager;
 import android.content.Context;
 
+import com.tingwa.utils.LogUtil;
+
 
 public abstract class NotificationBase{
     private static final String TAG = "NotificationBase";
-    public static final int MUSIC_NOTIFICATION = 1000;
+    public static final int MUSIC_NOTIFICATION_ID = 1000;
     public static final String NOTIFICATION_CMD_KEY = "notification_cmd_key";
     public static final String NOTIFICATION_CMD_EXIT_MUSIC = "notification_cmd_exit_music";
     private final Context mContext;
@@ -21,7 +23,8 @@ public abstract class NotificationBase{
 
     abstract int getNotificationID();
 
-    public void clearNotification(Context context) {
+    public void clearNotification() {
+        LogUtil.d( getClass().getSimpleName() +" clearNotification ");
         if(mNotificationManager != null) {
             mNotificationManager.cancel(getNotificationID());
         }

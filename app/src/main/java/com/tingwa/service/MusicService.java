@@ -131,7 +131,7 @@ public class MusicService extends Service {
     public void stopMusic(){
         mMediaPlayer.stop();
         killMediaPlayer();
-        mMusicNotification.clearNotification(mApplicationContext);
+        mMusicNotification.clearNotification();
     }
 
     public static class Builder {
