@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tingwa.constant.StaticContent;
 import com.tingwa.presenter.SongPresenter;
 import com.tingwa.R;
 import com.tingwa.adapter.SongAdapter;
@@ -76,6 +77,10 @@ public class MainFragment extends BaseFragment {
             public void onItemClick(View view, int position) {
                 TextView songUrl = (TextView) view.findViewById(R.id.url);
                 TextView songTitle = (TextView) view.findViewById(R.id.title);
+                String url = (String) songUrl.getText();
+                String title = (String) songTitle.getText();
+
+                MusicService.getInstance().playAudio(url,title,title);
 
                 //歌曲首页地址
                 String songUrlText = (String) songUrl.getText();
@@ -95,12 +100,21 @@ public class MainFragment extends BaseFragment {
         mMineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mSongPresenter.loadData(StaticContent.MINE_PAGE);
-                Intent intent = new Intent(getActivity(), MusicService.class);
-                getActivity().startService(intent);
+                mSongPresenter.loadData(StaticContent.MINE_PAGE);
+//                Intent intent = new Intent(getActivity(), MusicService.class);
+//                getActivity().startService(intent);
 //                getActivity().bindService(intent,mServiceConnection, Context.BIND_AUTO_CREATE);
             }
         });
+        Button mainBtn = view.findViewById(R.id.main);
+        Button topBtn = view.findViewById(R.id.top);
+        topBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSongPresenter.loadData(StaticContent.TOP_PAGE);
+            }
+        });
+
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {

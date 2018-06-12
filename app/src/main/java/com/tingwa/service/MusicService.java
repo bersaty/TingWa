@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.tingwa.constant.StaticContent;
 import com.tingwa.notificaton.MusicNotification;
 import com.tingwa.utils.LogUtil;
+
+import java.io.IOException;
 
 /**
  *
@@ -35,6 +38,9 @@ public class MusicService extends Service {
         }
     }
 
+    public MusicService() {
+    }
+
     public static MusicService getInstance() {
         return INSTANCE;
     }
@@ -42,6 +48,7 @@ public class MusicService extends Service {
     private MusicService(Context applicationContext) {
         this.mApplicationContext = applicationContext;
         mMusicNotification = new MusicNotification(applicationContext);
+        mMediaPlayer = new MediaPlayer();
     }
 
     @Nullable
@@ -61,10 +68,14 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.d(" onStartCommand");
 
-        String url = intent.getExtras().getString(StaticContent.INTENT_KEY_URL);
-        String title = intent.getExtras().getString(StaticContent.INTENT_KEY_TITLE);
-        String summary = intent.getExtras().getString(StaticContent.INTENT_KEY_SUMMARY);
+        if(intent.getExtras() !=null) {
+            String url = intent.getExtras().getString(StaticContent.INTENT_KEY_URL);
+            String title = intent.getExtras().getString(StaticContent.INTENT_KEY_TITLE);
+            String summary = intent.getExtras().getString(StaticContent.INTENT_KEY_SUMMARY);
 
+            playAudio(url, title, summary);
+            mMusicNotification.sendNotification(title, summary);
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -75,15 +86,19 @@ public class MusicService extends Service {
         killMediaPlayer();
     }
 
-    private void playAudio(String url) throws Exception {
-        killMediaPlayer();
-        mMediaPlayer = new MediaPlayer();
-        mMediaPlayer.setDataSource(url);
-        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        mMediaPlayer.setLooping(false);
-        mMediaPlayer.prepare();
-        mMediaPlayer.start();
-        mMusicNotification.sendNotification("听蛙");
+    public void playAudio(String url,String title,String summary){
+        LogUtil.d(" play Audio title = "+title +" url = "+url);
+        mMediaPlayer.reset();
+        try {
+            mMediaPlayer.setDataSource(url);
+            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mMediaPlayer.setLooping(false);
+            mMediaPlayer.prepare();
+            mMediaPlayer.start();
+            mMusicNotification.sendNotification(title,summary);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -105,7 +120,6 @@ public class MusicService extends Service {
             this.context = application;
             return this;
         }
-
 
         public MusicService build() {
             if (context == null) {

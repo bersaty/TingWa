@@ -18,7 +18,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -28,6 +27,11 @@
             android:name=".service.MusicService"
             android:exported="true">
         </service>
+        <receiver android:name=".receiver.MusicExitReceiver">
+            <intent-filter>
+                <action android:name="com.wch.intent.action.MUSIC_EXIT"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
