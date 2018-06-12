@@ -1,4 +1,4 @@
-package com.tingwa.Presenter;
+package com.tingwa.presenter;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;

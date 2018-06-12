@@ -18,4 +18,7 @@ public class StaticContent {
     public final static String testUrl = "http://mp3.itingwa.com/2015-07/21/20150721104826-ODg2NTEx.mp3";//测试 何处身安（钢琴）
     public final static String MINE_URL = "http://www.itingwa.com/u/103559/music/&f=1";//我登录的 http://www.itingwa.com/u/103559/music/&f=1&p=2&tag=0
 
+    public final static String INTENT_KEY_URL = "intent_key_url";
+    public final static String INTENT_KEY_TITLE = "intent_key_title";
+    public final static String INTENT_KEY_SUMMARY = "intent_key_summary";
 }

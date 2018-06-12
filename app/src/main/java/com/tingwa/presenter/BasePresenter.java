@@ -1,4 +1,4 @@
-package com.tingwa.Presenter;
+package com.tingwa.presenter;
 
 import android.content.Context;
 

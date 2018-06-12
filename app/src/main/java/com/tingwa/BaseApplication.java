@@ -18,6 +18,7 @@ package com.tingwa;
 import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
+import com.tingwa.service.MusicService;
 import com.tingwa.utils.MusicCacheUtils;
 
 public class BaseApplication extends Application {
@@ -26,6 +27,7 @@ public class BaseApplication extends Application {
     super.onCreate();
     LeakCanary.install(this);
     MusicCacheUtils.createCacheDir(this);
+    MusicService.create(this);
   }
 
 }

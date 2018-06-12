@@ -1,7 +1,6 @@
 package com.tingwa.fragment;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -16,7 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tingwa.Presenter.SongPresenter;
+import com.tingwa.presenter.SongPresenter;
 import com.tingwa.R;
 import com.tingwa.adapter.SongAdapter;
 import com.tingwa.decoration.DividerItemDecoration;
