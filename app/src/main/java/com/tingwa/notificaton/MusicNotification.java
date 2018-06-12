@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tingwa.activity.MainActivity;
 import com.tingwa.receiver.MusicExitReceiver;
 import com.tingwa.utils.LogUtil;
 
@@ -14,12 +15,11 @@ public class MusicNotification extends NotificationBase{
 
     public static int NOTIFICATION_MUSIC_ID = 1;
     private ContentValues mMusicInfo;
-
-    NotificationManager mNotificationManager;
     Context mContext;
 
     public MusicNotification(Context context) {
         super(context);
+        mContext = context;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class MusicNotification extends NotificationBase{
 
         //点击事件
         Intent openIntent = new Intent();
-
+        openIntent.setClass(mContext,MainActivity.class);
         openIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent openPI = PendingIntent.getActivity(mContext,0,openIntent,PendingIntent.FLAG_UPDATE_CURRENT);
 

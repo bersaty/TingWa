@@ -18,6 +18,7 @@ import java.net.URL;
 /**
  * 音乐缓存帮助类
  * 磁盘缓存DiskLruCache
+ * 网页计算MD5缓存，不用每次都解析
  */
 public class MusicCacheUtils {
 

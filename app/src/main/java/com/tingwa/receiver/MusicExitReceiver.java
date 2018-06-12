@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tingwa.notificaton.NotificationBase;
+import com.tingwa.service.MusicService;
 import com.tingwa.utils.LogUtil;
 
 public class MusicExitReceiver extends BroadcastReceiver {
@@ -15,7 +16,7 @@ public class MusicExitReceiver extends BroadcastReceiver {
         if(NotificationBase.NOTIFICATION_CMD_EXIT_MUSIC.
                 equals(intent.getExtras().getString(NotificationBase.NOTIFICATION_CMD_KEY))){
             LogUtil.d(" MusicExitReceiver ");
-            NotificationBase.clearNotificationById(NotificationBase.MUSIC_NOTIFICATION,context);
+            MusicService.getInstance().stopMusic();
         }
     }
 }

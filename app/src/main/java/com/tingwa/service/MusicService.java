@@ -7,14 +7,20 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.tingwa.constant.StaticContent;
 import com.tingwa.notificaton.MusicNotification;
+import com.tingwa.utils.JsoupHtmlUtils;
 import com.tingwa.utils.LogUtil;
 
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -26,6 +32,7 @@ public class MusicService extends Service {
     private AudioManager mAudioManager;
     private static volatile MusicService INSTANCE = null;
     private MusicNotification mMusicNotification;
+    private ThreadPoolExecutor mThreadPoolExecutor;
 
     public static void create(Application application) {
         LogUtil.d(" with application");
@@ -49,6 +56,8 @@ public class MusicService extends Service {
         this.mApplicationContext = applicationContext;
         mMusicNotification = new MusicNotification(applicationContext);
         mMediaPlayer = new MediaPlayer();
+        mThreadPoolExecutor = new ThreadPoolExecutor(1,1,3,TimeUnit.SECONDS
+                ,new LinkedBlockingQueue<Runnable>(),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
     }
 
     @Nullable
@@ -68,11 +77,11 @@ public class MusicService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtil.d(" onStartCommand");
 
-        if(intent.getExtras() !=null) {
-            String url = intent.getExtras().getString(StaticContent.INTENT_KEY_URL);
-            String title = intent.getExtras().getString(StaticContent.INTENT_KEY_TITLE);
-            String summary = intent.getExtras().getString(StaticContent.INTENT_KEY_SUMMARY);
-
+        Bundle bundle = intent.getExtras();
+        if(bundle !=null) {
+            String url = bundle.getString(StaticContent.INTENT_KEY_URL);
+            String title = bundle.getString(StaticContent.INTENT_KEY_TITLE);
+            String summary = bundle.getString(StaticContent.INTENT_KEY_SUMMARY);
             playAudio(url, title, summary);
             mMusicNotification.sendNotification(title, summary);
         }
@@ -86,19 +95,26 @@ public class MusicService extends Service {
         killMediaPlayer();
     }
 
-    public void playAudio(String url,String title,String summary){
-        LogUtil.d(" play Audio title = "+title +" url = "+url);
-        mMediaPlayer.reset();
-        try {
-            mMediaPlayer.setDataSource(url);
-            mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mMediaPlayer.setLooping(false);
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
-            mMusicNotification.sendNotification(title,summary);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void playAudio(final String url, final String title, final String summary){
+        mThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                String mp3Url = JsoupHtmlUtils.getMp3Url(url);
+                LogUtil.d(" play Audio title = "+title +" mp3Url = "+mp3Url);
+                try {
+                    mMediaPlayer.stop();
+                    mMediaPlayer.reset();
+                    mMediaPlayer.setDataSource(mp3Url);
+                    mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//            mMediaPlayer.setLooping(false);
+                    mMediaPlayer.prepare();
+                    mMediaPlayer.start();
+                    mMusicNotification.sendNotification(title,summary);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -112,10 +128,14 @@ public class MusicService extends Service {
         }
     }
 
+    public void stopMusic(){
+        mMediaPlayer.stop();
+        killMediaPlayer();
+        mMusicNotification.clearNotification(mApplicationContext);
+    }
+
     public static class Builder {
-
         private Context context;
-
         public MusicService.Builder context(Application application) {
             this.context = application;
             return this;
@@ -125,7 +145,6 @@ public class MusicService extends Service {
             if (context == null) {
                 throw new NullPointerException("context for app must not be null");
             }
-
             return new MusicService(context);
         }
     }
