@@ -45,6 +45,7 @@ public class JsoupHtmlUtils {
                 if(i >1){
                     url = url + "&p="+i+"&tag=0";
                 }
+                Log.i("wch url = ", "url "+url);
                 Log.i("wch elemname = ", "1111~~~~~~~~~~~  ");
                 Document mDocument = Jsoup.connect(url).timeout(5000).post();
                 Document content = Jsoup.parse(mDocument.toString());

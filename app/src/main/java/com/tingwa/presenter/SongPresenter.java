@@ -30,10 +30,6 @@ public class SongPresenter extends BasePresenter implements SongContract.Present
         mLoadHtmlTask.execute();
     }
 
-    public void playMusic(){
-
-    }
-
     /**
      * Created by wuchunhui on 15-11-9.
      */

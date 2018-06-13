@@ -1,7 +1,6 @@
 package com.tingwa.fragment;
 
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -15,12 +14,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tingwa.constant.StaticContent;
-import com.tingwa.presenter.SongPresenter;
 import com.tingwa.R;
 import com.tingwa.adapter.SongAdapter;
+import com.tingwa.constant.StaticContent;
 import com.tingwa.decoration.DividerItemDecoration;
 import com.tingwa.event.LoadDataEvent;
+import com.tingwa.presenter.SongPresenter;
 import com.tingwa.service.MusicService;
 import com.tingwa.utils.LogUtil;
 
@@ -101,9 +100,6 @@ public class MainFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 mSongPresenter.loadData(StaticContent.MINE_PAGE);
-//                Intent intent = new Intent(getActivity(), MusicService.class);
-//                getActivity().startService(intent);
-//                getActivity().bindService(intent,mServiceConnection, Context.BIND_AUTO_CREATE);
             }
         });
         Button mainBtn = view.findViewById(R.id.main);
@@ -133,7 +129,10 @@ public class MainFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void receiveLoadDataEvent(LoadDataEvent loadDataEvent) {
         LogUtil.d(" receiveLoadDataEvent data size = " + loadDataEvent.getSongList().size());
+        //此处有问题 wch_bug
         mSongAdapter.clearAllItems();
         mSongAdapter.addAllItems(loadDataEvent.getSongList());
+        mRecyclerView.setAdapter(mSongAdapter);
+        mSongAdapter.notifyDataSetChanged();
     }
 }

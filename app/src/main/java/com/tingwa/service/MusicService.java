@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -15,6 +14,7 @@ import com.tingwa.constant.StaticContent;
 import com.tingwa.notificaton.MusicNotification;
 import com.tingwa.utils.JsoupHtmlUtils;
 import com.tingwa.utils.LogUtil;
+import com.tingwa.utils.MusicCacheUtils;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -33,6 +33,7 @@ public class MusicService extends Service {
     private static volatile MusicService INSTANCE = null;
     private MusicNotification mMusicNotification;
     private ThreadPoolExecutor mThreadPoolExecutor;
+    private MusicCacheUtils mMusicCacheUtils;
 
     public static void create(Application application) {
         LogUtil.d(" with application");
@@ -58,6 +59,7 @@ public class MusicService extends Service {
         mMediaPlayer = new MediaPlayer();
         mThreadPoolExecutor = new ThreadPoolExecutor(1,1,3,TimeUnit.SECONDS
                 ,new LinkedBlockingQueue<Runnable>(),Executors.defaultThreadFactory(),new ThreadPoolExecutor.AbortPolicy());
+        mMusicCacheUtils = new MusicCacheUtils(applicationContext);
     }
 
     @Nullable
@@ -83,7 +85,7 @@ public class MusicService extends Service {
             String title = bundle.getString(StaticContent.INTENT_KEY_TITLE);
             String summary = bundle.getString(StaticContent.INTENT_KEY_SUMMARY);
             playAudio(url, title, summary);
-            mMusicNotification.sendNotification(title, summary);
+            mMusicNotification.sendNotification(title,summary);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -96,17 +98,23 @@ public class MusicService extends Service {
     }
 
     public void playAudio(final String url, final String title, final String summary){
+
+        //此处多次点击有问题 wch_bug
         mThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                String mp3Url = JsoupHtmlUtils.getMp3Url(url);
-                LogUtil.d(" play Audio title = "+title +" mp3Url = "+mp3Url);
+                String songPath = JsoupHtmlUtils.getMp3Url(url);
+                LogUtil.d(" play Audio title = "+title +" mp3Url = "+songPath);
+                if(mMusicCacheUtils.isMusicExist(songPath)){
+                    songPath = MusicCacheUtils.getDiskCacheFilePath(mApplicationContext,songPath);
+                }else {
+                    mMusicCacheUtils.putMusic(songPath,mApplicationContext);
+                }
                 try {
                     mMediaPlayer.stop();
                     mMediaPlayer.reset();
-                    mMediaPlayer.setDataSource(mp3Url);
+                    mMediaPlayer.setDataSource(songPath);
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-//            mMediaPlayer.setLooping(false);
                     mMediaPlayer.prepare();
                     mMediaPlayer.start();
                     mMusicNotification.sendNotification(title,summary);

@@ -131,7 +131,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             return;
         }
         mData.clear();
-        notifyDataSetChanged();
     }
 
     public void addAllItems(Collection<? extends ContentValues> values) {
@@ -139,7 +138,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
             mData = (List<ContentValues>) values;
         }
         mData.addAll(values);
-        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener(OnItemClickLitener listener) {

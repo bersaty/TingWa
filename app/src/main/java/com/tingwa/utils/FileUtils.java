@@ -1,5 +1,6 @@
 package com.tingwa.utils;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
@@ -621,5 +622,15 @@ public class FileUtils {
             }
         }
         return file;
+    }
+
+    public static String getCacheDir(Context context){
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }
+        return cachePath;
     }
 }
